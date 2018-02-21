@@ -405,7 +405,7 @@ Rows matched: 1  Changed: 1  Warnings: 0
 \begin{frame}[shrink=10,fragile]
   \frametitle{New data set}
   \begin{itemize}
-    \item We can update our `pet` database with the weights of our pets,
+    \item We can update our pet database with the weights of our pets,
       ending up with:
       \begin{scriptsize}
 \begin{verbatim}
@@ -445,7 +445,7 @@ mysql> SELECT * FROM pet;
   \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]
+\begin{frame}[shrink=10,fragile]
   \frametitle{Aggregate function examples}
   \begin{itemize}
     \item {\color{blue}{COUNT}}
@@ -458,6 +458,10 @@ mysql> SELECT COUNT(owner) FROM pet;
 +--------------+
 1 row in set (0.00 sec)
 
+\end{verbatim}
+    \item Why is the answer 5? What if we want the number of \emph{different}
+      owners?
+\begin{verbatim}
 mysql> SELECT COUNT(DISTINCT owner) FROM pet;
 +-----------------------+
 | COUNT(DISTINCT owner) |
@@ -465,7 +469,122 @@ mysql> SELECT COUNT(DISTINCT owner) FROM pet;
 |                     4 |
 +-----------------------+
 1 row in set (0.00 sec)
+\end{verbatim}
+  \end{itemize}
+\end{frame}
 
+\begin{frame}[shrink=10,fragile]
+  \frametitle{Aggregate function examples}
+  \begin{itemize}
+    \item {\color{blue}{AVG}}
+\begin{verbatim}
+mysql> SELECT AVG(weight) FROM pet;
++-------------+
+| AVG(weight) |
++-------------+
+|   4675.4000 |
++-------------+
+1 row in set (0.00 sec)
+
+\end{verbatim}
+    \item Use {\color{blue}{GROUP BY}} to average over an attribute
+\begin{verbatim}
+
+mysql> SELECT species, AVG(weight) 
+    -> FROM pet GROUP BY species;
++---------+-------------+
+| species | AVG(weight) |
++---------+-------------+
+| cat     |   3333.0000 |
+| dog     |   6543.0000 |
+| hamster |     45.0000 |
+| snake   |  10123.0000 |
++---------+-------------+
+4 rows in set (0.00 sec)
+\end{verbatim}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=10,fragile]
+  \frametitle{Aggregate function examples}
+  \begin{itemize}
+    \item {\color{blue}{MIN}}
+\begin{verbatim}
+mysql> SELECT MIN(weight) FROM pet;
++-------------+
+| MIN(weight) |
++-------------+
+|          45 |
++-------------+
+1 row in set (0.00 sec)
+
+\end{verbatim}
+    \item Use {\color{blue}{GROUP BY}} to get the minimum over an attribute
+\begin{verbatim}
+mysql> SELECT owner, MIN(weight) FROM pet GROUP BY owner;
++--------+-------------+
+| owner  | MIN(weight) |
++--------+-------------+
+| Benny  |       10123 |
+| Diane  |          45 |
+| Gwen   |        4321 |
+| Harold |        2345 |
++--------+-------------+
+4 rows in set (0.00 sec)
+\end{verbatim}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=10,fragile]
+  \frametitle{Aggregate function examples}
+  \begin{itemize}
+    \item {\color{blue}{SUM}}
+\begin{verbatim}
+
+mysql> SELECT SUM(weight) FROM pet;
++-------------+
+| SUM(weight) |
++-------------+
+|       23377 |
++-------------+
+1 row in set (0.00 sec)
+
+\end{verbatim}
+    \item Use {\color{blue}{GROUP BY}} to get the sum over an attribute
+\begin{verbatim}
+
+mysql> SELECT owner, SUM(weight) FROM pet GROUP BY owner;
++--------+-------------+
+| owner  | SUM(weight) |
++--------+-------------+
+| Benny  |       10123 |
+| Diane  |          45 |
+| Gwen   |        4321 |
+| Harold |        8888 |
++--------+-------------+
+4 rows in set (0.00 sec)
+\end{verbatim}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=10,fragile]
+  \frametitle{Exercise}
+  \begin{itemize}
+    \item Write a query to list every species and the total weight of pets of
+      that species.
+    \item<2-> Answer
+\begin{verbatim}
+mysql> SELECT species, SUM(weight) 
+    -> FROM pet GROUP BY species;
++---------+-------------+
+| species | SUM(weight) |
++---------+-------------+
+| cat     |        6666 |
+| dog     |        6543 |
+| hamster |          45 |
+| snake   |       10123 |
++---------+-------------+
+4 rows in set (0.00 sec)
 \end{verbatim}
   \end{itemize}
 \end{frame}
