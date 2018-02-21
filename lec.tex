@@ -1,0 +1,417 @@
+\documentclass[hyperref={pdfpagelabels=false},svgnames,xcolor=table]{beamer}
+\mode<presentation>{%
+  \usetheme{Madrid}
+  \setbeamertemplate{navigation symbols}{}
+}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{tikz}
+
+\title{Operating systems fundamentals - B07}
+\subtitle{}
+\author{David Kendall}
+\institute{Northumbria University}
+\date{}
+\begin{document}
+
+\begin{frame}
+\titlepage%
+\end{frame}
+
+\begin{frame}
+\frametitle{What is SQL?}
+\begin{itemize}
+  \item Structured Query Language
+  \item Used to `talk' to a database server
+  \item A standard language for querying and manipulating data
+  \item Used as a front-end to many database management systems, e.g.
+    MySQL, Oracle, PostgreSQL, Sybase, \ldots
+  \item SQL is a very high-level programming language (declarative)
+  \item Three main parts: data definition language, data manipulation 
+    language, user privileges
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{When do you need a database?}
+  \begin{itemize}
+    \item Multiple simultaneous changes to data (concurrency)
+    \item Data changes frequently
+    \item Large data sets where you need to be able to select items
+      of current interest
+    \item Share large data set among many users
+    \item Rapid queries
+    \item Web interface to data, especially dynamic data
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{SQL features}
+    \begin{description}
+      \item[data definition language] \mbox{\strut}
+        \begin{itemize}
+          \item define relational schemata 
+          \item create/alter/delete tables and their attributes
+        \end{itemize}
+      \item[data manipulation language] \mbox{\strut}
+        \begin{itemize}
+          \item insert/delete/modify tuples in tables
+          \item query one or more tables
+        \end{itemize}
+      \item[user privileges] \mbox{\strut}
+        \begin{itemize}
+          \item who can do what to which?
+        \end{itemize}
+    \end{description}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Ways to use SQL}
+  \begin{itemize}
+    \item Console command (\textbf{mysql -u} \emph{user} \textbf{-p})
+    \item GUI interfaces are often available
+    \item Interfaces to many programming languages, e.g. Python, Perl, PHP,
+      R, \ldots
+    \item SQLite --- use SQL without a database server
+    \item We'll use MySQL with commands from the console in this module
+    \item MySQL is the most widely used open-source DBMS in the world
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Tables in SQL}
+  \textbf{pet} \\
+  \begin{tabular}{|c|c|c|c|c|c|}
+    \hline
+    \textbf{name} & \textbf{owner} & \textbf{species} & \textbf{sex} & \textbf{birth} & \textbf{death} \\
+    \hline
+    Fluffy & Harold & cat & f & 1993-02-04 & \\
+    \hline
+    Claws & Gwen & cat & m & 1994-03-17 & \\
+    \hline
+    Slim & Benny & snake & m & 1996-04-29 & 1997-03-11 \\
+    \hline
+    Buffy & Harold & dog & f & 1989-05-13 & \\
+    \hline
+  \end{tabular}
+  \bigskip
+  \begin{itemize}
+    \item A \textbf{table} (or \textbf{relation}) is a \emph{multiset} of
+      \emph{tuples} having the \emph{attributes} specified by the
+      \emph{schema}
+    \item We need to break this definition down \ldots
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Tables in SQL}
+  \textbf{pet} \\
+  \begin{tabular}{|c|c|c|c|c|c|}
+    \hline
+    \textbf{name} & \textbf{owner} & \textbf{species} & \textbf{sex} & \textbf{birth} & \textbf{death} \\
+    \hline
+    Fluffy & Harold & cat & f & 1993-02-04 & \\
+    \hline
+    Claws & Gwen & cat & m & 1994-03-17 & \\
+    \hline
+    Slim & Benny & snake & m & 1996-04-29 & 1997-03-11 \\
+    \hline
+    Buffy & Harold & dog & f & 1989-05-13 & \\
+    \hline
+  \end{tabular}
+  \bigskip
+  \begin{itemize}
+  \item A \textbf{multiset} is an unordered list (a set with duplicate elements
+    allowed)
+      \begin{itemize}
+        \item List: $[1, 1, 2, 3]$
+        \item Set: $\{1, 2, 3\}$
+        \item Multiset: $\{1, 1, 2, 3\}$
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Tables in SQL}
+  \textbf{pet} \\
+  \begin{tabular}{|c|>{\columncolor{gray}}c|c|c|c|c|}
+    \hline
+    \textbf{name} & \textbf{owner} & \textbf{species} & \textbf{sex} & \textbf{birth} & \textbf{death} \\
+    \hline
+    Fluffy & Harold & cat & f & 1993-02-04 & \\
+    \hline
+    Claws & Gwen & cat & m & 1994-03-17 & \\
+    \hline
+    Slim & Benny & snake & m & 1996-04-29 & 1997-03-11 \\
+    \hline
+    Buffy & Harold & dog & f & 1989-05-13 & \\
+    \hline
+  \end{tabular}
+  \bigskip
+  \begin{itemize}
+    \item An \textbf{attribute} (or \textbf{column}) is a typed data entry,
+      present in each tuple in the relation
+    \item Attributes must have an \emph{atomic} data type in standard SQL, 
+      e.g.\ a number, a string, a date, \ldots but \emph{not} a list,
+      set, table, \ldots
+    \item Each value in the table must have the correct type for the
+      attribute, or it may be \textbf{NULL}, indicating that the value is
+      not known or not available, e.g. the value of the \textbf{death} 
+      attribute for \textbf{Fluffy} is \textbf{NULL} (presumably because
+      Fluffy is still alive)
+    \item The number of attributes in a table gives the table's 
+      \textbf{arity}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Tables in SQL}
+  \textbf{pet} \\
+  \begin{tabular}{|c|c|c|c|c|c|}
+    \hline
+    \textbf{name} & \textbf{owner} & \textbf{species} & \textbf{sex} & \textbf{birth} & \textbf{death} \\
+    \hline
+    Fluffy & Harold & cat & f & 1993-02-04 & \\
+    \hline
+    Claws & Gwen & cat & m & 1994-03-17 & \\
+    \hline
+    \rowcolor{gray}Slim & Benny & snake & m & 1996-04-29 & 1997-03-11 \\
+    \hline
+    Buffy & Harold & dog & f & 1989-05-13 & \\
+    \hline
+  \end{tabular}
+  \bigskip
+  \begin{itemize}
+    \item A \textbf{tuple} (or \textbf{row}) is a single entry in the 
+      table, having the attributes specified by the schema
+    \item Also sometimes referred to as a \textbf{record}
+    \item The number of rows in a table gives the table's \textbf{cardinality}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Data types in SQL}
+  \begin{itemize}
+    \item Atomic types:
+      \begin{itemize}
+        \item Characters: \textbf{CHAR(20)}, \textbf{VARCHAR(50)}
+        \item Numbers: \textbf{INT}, \textbf{BIGINT}, \textbf{SMALLINT},
+          \textbf{FLOAT}
+        \item Others: \textbf{MONEY}, \textbf{DATE}, \textbf{DATETIME}
+      \end{itemize}
+    \item Every attribute must have an atomic type, i.e. tables are \emph{flat}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Table schemas}
+  \begin{itemize}
+    \item The \textbf{schema} of a table is its name, its attributes, and
+      their types
+  \end{itemize}
+  \begin{block}{pet schema}
+    pet(name VARCHAR(20), owner VARCHAR(20), species VARCHAR(20), sex CHAR(1),
+        birth DATE, death DATE)
+  \end{block}
+  \begin{itemize}
+    \item A \textbf{key} is an attribute (or set of attributes) whose value
+      is unique
+    \item A possible key for \textbf{pet} is underlined below, assuming that
+      there is no pet with the same name, owner, and birth date 
+  \end{itemize}
+  \begin{block}{pet key}
+    pet(\underline{name} VARCHAR(20), \underline{owner} VARCHAR(20), species VARCHAR(20), sex CHAR(1),
+        \underline{birth} DATE, death DATE)
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Key constraints}
+  \begin{itemize}
+    \item A \emph{key} is a \emph{minimal subset of attributes} that
+      acts as a unique identifier for a tuple in a relation
+    \item A key is an implicit constraint on which tuples can be in the 
+      relation 
+    \item If two tuples agree on the value of the key, they must be the
+      same tuple!
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=10, fragile]
+  \frametitle{SQL queries --- SELECT}
+  \begin{itemize}
+    \item Basic form (there are many more variations)
+      \begin{tabular}{>{\color{blue}}ll}
+        SELECT & <attributes> \\
+        FROM & <one or more tables> \\
+        WHERE & <conditions>
+      \end{tabular}
+    \item This is known as an \textbf{SFW} query, e.g.\ 
+  \begin{verbatim}
+  mysql> SELECT name, species, birth
+      -> FROM pet
+      -> WHERE owner = 'harold';
++--------+---------+------------+
+| name   | species | birth      |
++--------+---------+------------+
+| Fluffy | cat     | 1993-02-04 |
+| Buffy  | dog     | 1989-05-13 |
++--------+---------+------------+
+2 rows in set (0.00 sec)
+  \end{verbatim}
+\item Note it is the final semi-colon (\textbf{;}) that causes the
+  command to be executed --- this is generally the case when entering
+  SQL commands
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{SQL queries --- SELECT}
+  \begin{itemize}
+    \item You can select \emph{ALL} attributes from a table
+      using \textbf{*}, e.g.
+\begin{scriptsize}
+\begin{verbatim}
+mysql> SELECT *
+    -> FROM pet
+    -> WHERE birth > '1994-01-01';
++-------+-------+---------+------+------------+------------+
+| name  | owner | species | sex  | birth      | death      |
++-------+-------+---------+------+------------+------------+
+| Claws | Gwen  | cat     | m    | 1994-03-17 | NULL       |
+| Slim  | Benny | snake   | m    | 1996-04-29 | 1997-03-11 |
++-------+-------+---------+------+------------+------------+
+2 rows in set (0.00 sec)
+\end{verbatim}
+\end{scriptsize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Some syntax details (UNIX environment)}
+  \begin{itemize}
+    \item SQL commands and attributes are \emph{not} case-sensitive, e.g.\ 
+      \begin{itemize}
+        \item Same: SELECT, Select, select
+        \item Same: CREATE, Create, crEAtE
+        \item Same: BIRTH, Birth, birth
+      \end{itemize}
+    \item Names of databases, tables, and values \emph{are} case-sensitive, 
+      e.g.\ 
+      \begin{itemize}
+        \item Different: PET, Pet, pet
+        \item Different: 'HAROLD', 'Harold', 'harold'
+      \end{itemize}
+    \item A common convention is to use UPPERCASE letters for SQL commands,
+      e.g. SELECT, FROM, WHERE, CREATE and lowercase letter for the names
+      of databases, tables, attributes \ldots e.g.\ pet, owner
+    \item Use single quotes for constants, e.g.\ \\
+      \begin{tabular}{ll}
+        'abc' & YES \\
+        "abc" & NO
+      \end{tabular}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Exercise --- SELECT}
+  \begin{itemize}
+    \item Write a query to show the name and species of all female pets
+    \item<2-> 
+\begin{verbatim}
+mysql> SELECT name, species
+    -> FROM pet
+    -> WHERE sex = 'f';
++--------+---------+
+| name   | species |
++--------+---------+
+| Fluffy | cat     |
+| Buffy  | dog     |
++--------+---------+
+2 rows in set (0.00 sec)
+\end{verbatim}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{INSERT command}
+  \begin{itemize}
+    \item The \textbf{INSERT} command is used to add a row to a table, e.g.\ 
+\begin{scriptsize}
+\begin{verbatim}
+mysql> INSERT INTO pet
+    -> VALUES ('Puffball', 'Diane', 'hamster', 'f', 
+    -> '1999-03-30', NULL);
+Query OK, 1 row affected (0.04 sec)
+
+mysql> SELECT * FROM pet;
++----------+--------+---------+------+------------+------------+
+| name     | owner  | species | sex  | birth      | death      |
++----------+--------+---------+------+------------+------------+
+| Fluffy   | Harold | cat     | f    | 1993-02-04 | NULL       |
+| Claws    | Gwen   | cat     | m    | 1994-03-17 | NULL       |
+| Slim     | Benny  | snake   | m    | 1996-04-29 | 1997-03-11 |
+| Buffy    | Harold | dog     | f    | 1989-05-13 | NULL       |
+| Puffball | Diane  | hamster | f    | 1999-03-30 | NULL       |
++----------+--------+---------+------+------------+------------+
+5 rows in set (0.00 sec)
+\end{verbatim}
+\end{scriptsize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=10,fragile]
+  \frametitle{ALTER TABLE and UPDATE commands}
+  \begin{itemize}
+    \item The \textbf{ALTER TABLE} command can be used to add a
+      column to a table, e.g.\
+\begin{scriptsize}
+\begin{verbatim}
+
+mysql> ALTER TABLE pet ADD COLUMN weight INT;
+Query OK, 0 rows affected (0.63 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM pet;
++----------+--------+---------+------+------------+------------+--------+
+| name     | owner  | species | sex  | birth      | death      | weight |
++----------+--------+---------+------+------------+------------+--------+
+| Fluffy   | Harold | cat     | f    | 1993-02-04 | NULL       |   NULL |
+| Claws    | Gwen   | cat     | m    | 1994-03-17 | NULL       |   NULL |
+| Slim     | Benny  | snake   | m    | 1996-04-29 | 1997-03-11 |   NULL |
+| Buffy    | Harold | dog     | f    | 1989-05-13 | NULL       |   NULL |
+| Puffball | Diane  | hamster | f    | 1999-03-30 | NULL       |   NULL |
++----------+--------+---------+------+------------+------------+--------+
+5 rows in set (0.00 sec)
+
+\end{verbatim}
+\end{scriptsize}
+    \item The \textbf{UPDATE} command can be used to update the value of
+      an entry, e.g.\
+\begin{scriptsize}
+\begin{verbatim}
+
+mysql> UPDATE pet SET weight = 2345 WHERE name = 'Fluffy';
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+\end{verbatim}
+\end{scriptsize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Summarising data}
+  \begin{itemize}
+    \item Sometimes we want a summary of the data rather than the details 
+  \end{itemize}
+\end{frame}
+\end{document}
+\begin{frame}
+  \frametitle{}
+  \begin{itemize}
+    \item
+  \end{itemize}
+\end{frame}
