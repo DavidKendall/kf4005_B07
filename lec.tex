@@ -402,12 +402,74 @@ Rows matched: 1  Changed: 1  Warnings: 0
   \end{itemize}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Summarising data}
+\begin{frame}[shrink=10,fragile]
+  \frametitle{New data set}
   \begin{itemize}
-    \item Sometimes we want a summary of the data rather than the details 
+    \item We can update our `pet` database with the weights of our pets,
+      ending up with:
+      \begin{scriptsize}
+\begin{verbatim}
+
+mysql> SELECT * FROM pet;
++----------+--------+---------+------+------------+------------+--------+
+| name     | owner  | species | sex  | birth      | death      | weight |
++----------+--------+---------+------+------------+------------+--------+
+| Fluffy   | Harold | cat     | f    | 1993-02-04 | NULL       |   2345 |
+| Claws    | Gwen   | cat     | m    | 1994-03-17 | NULL       |   4321 |
+| Slim     | Benny  | snake   | m    | 1996-04-29 | 1997-03-11 |  10123 |
+| Buffy    | Harold | dog     | f    | 1989-05-13 | NULL       |   6543 |
+| Puffball | Diane  | hamster | f    | 1999-03-30 | NULL       |     45 |
++----------+--------+---------+------+------------+------------+--------+
+5 rows in set (0.00 sec)
+
+\end{verbatim}
+      \end{scriptsize}
+    \item We're assuming here that all weights are expressed as an integer 
+      number of grams
   \end{itemize}
 \end{frame}
+
+\begin{frame}
+  \frametitle{Aggregating data}
+  \begin{itemize}
+    \item Sometimes we want a summary of the data rather than the details 
+    \item SQL has several aggregate functions to help with this, e.g. \\
+      \begin{tabular}{>{\color{blue}}lp{0.8\textwidth}}
+        COUNT & counts the number of rows in a table or view \\
+        AVG & calculates the average of a set of values \\
+        MIN & gets the minimum value in a set of values \\
+        MAX & gets the maximum value in a set of values \\
+        SUM & calculates the sum of values
+      \end{tabular}
+    \item Examples to follow \ldots
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Aggregate function examples}
+  \begin{itemize}
+    \item {\color{blue}{COUNT}}
+\begin{verbatim}
+mysql> SELECT COUNT(owner) FROM pet;
++--------------+
+| COUNT(owner) |
++--------------+
+|            5 |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT COUNT(DISTINCT owner) FROM pet;
++-----------------------+
+| COUNT(DISTINCT owner) |
++-----------------------+
+|                     4 |
++-----------------------+
+1 row in set (0.00 sec)
+
+\end{verbatim}
+  \end{itemize}
+\end{frame}
+
 \end{document}
 \begin{frame}
   \frametitle{}
