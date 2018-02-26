@@ -77,12 +77,50 @@
       R, \ldots
     \item SQLite --- use SQL without a database server
     \item We'll use MySQL with commands from the console in this module
-    \item MySQL is the most widely used open-source DBMS in the world
+    \item MySQL is the most widely used open-source DataBase Management 
+      System (DBMS) available today
   \end{itemize}
 \end{frame}
 
 \begin{frame}
+  \frametitle{Some basic database concepts}
+  \begin{itemize}
+    \item A database server can contain many databases
+    \item Databases are collections of tables
+    \item Tables are two-dimensional with rows (tuples, observations)
+      and columns (attributes, variables)
+    \item Limited mathematical and summary operations available
+    \item Very good at combining information from several tables
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Basic interactions with the database server}
+  \begin{itemize}
+    \item Login \\
+      \verb'mysql -u root -p' \\
+      \verb'Enter password: '
+    \item What databases is the server managing? \\
+      \verb'SHOW DATABASES;'
+    \item What tables are there in a database? \\
+      \verb'SHOW TABLES in <database name>;'
+    \item What columns are there in a table? \\
+      \verb'SHOW COLUMNS in <table name>;'
+    \item What are the types of data in a table? \\
+      \verb'DESCRIBE <table name>;'
+    \item How do I create a database? \\
+      \verb'CREATE DATABASE <database name>';
+    \item How do I select a particular database to work on? \\
+      \verb'USE <database name>';
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
   \frametitle{Tables in SQL}
+  \begin{itemize}
+    \item Assume we have a database called \verb'menagerie' that contains
+      a table called \verb'pet'
+  \end{itemize}
   \textbf{pet} \\
   \begin{tabular}{|c|c|c|c|c|c|}
     \hline
@@ -206,30 +244,22 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Table schemas}
+\begin{frame}[fragile]
+  \frametitle{Table schemas and table creation}
   \begin{itemize}
     \item The \textbf{schema} of a table is its name, its attributes, and
       their types
+    \item The table schema is specified when the table is created, e.g.\ 
+\begin{verbatim}
+mysql> CREATE TABLE pet (name VARCHAR(20), 
+    -> owner VARCHAR(20), species VARCHAR(20), 
+    -> sex CHAR(1), birth DATE, death DATE);
+\end{verbatim}
   \end{itemize}
-  \begin{block}{pet schema}
-    pet(name VARCHAR(20), owner VARCHAR(20), species VARCHAR(20), sex CHAR(1),
-        birth DATE, death DATE)
-  \end{block}
-  \begin{itemize}
-    \item A \textbf{key} is an attribute (or set of attributes) whose value
-      is unique
-    \item A possible key for \textbf{pet} is underlined below, assuming that
-      there is no pet with the same name, owner, and birth date 
-  \end{itemize}
-  \begin{block}{pet key}
-    pet(\underline{name} VARCHAR(20), \underline{owner} VARCHAR(20), species VARCHAR(20), sex CHAR(1),
-        \underline{birth} DATE, death DATE)
-  \end{block}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Key constraints}
+  \frametitle{Keys and Key constraints}
   \begin{itemize}
     \item A \emph{key} is a \emph{minimal subset of attributes} that
       acts as a unique identifier for a tuple in a relation
@@ -237,7 +267,13 @@
       relation 
     \item If two tuples agree on the value of the key, they must be the
       same tuple!
+    \item A possible key for \textbf{pet} is underlined below, assuming that
+      there is no pet with the same name, owner, and birth date 
   \end{itemize}
+  \begin{block}{pet key}
+    pet(\underline{name} VARCHAR(20), \underline{owner} VARCHAR(20), species VARCHAR(20), sex CHAR(1),
+        \underline{birth} DATE, death DATE)
+  \end{block}
 \end{frame}
 
 \begin{frame}[shrink=10, fragile]
@@ -260,7 +296,6 @@
 | Fluffy | cat     | 1993-02-04 |
 | Buffy  | dog     | 1989-05-13 |
 +--------+---------+------------+
-2 rows in set (0.00 sec)
   \end{verbatim}
 \item Note it is the final semi-colon (\textbf{;}) that causes the
   command to be executed --- this is generally the case when entering
@@ -284,7 +319,6 @@ mysql> SELECT *
 | Claws | Gwen  | cat     | m    | 1994-03-17 | NULL       |
 | Slim  | Benny | snake   | m    | 1996-04-29 | 1997-03-11 |
 +-------+-------+---------+------+------------+------------+
-2 rows in set (0.00 sec)
 \end{verbatim}
 \end{scriptsize}
   \end{itemize}
@@ -331,7 +365,6 @@ mysql> SELECT name, species
 | Fluffy | cat     |
 | Buffy  | dog     |
 +--------+---------+
-2 rows in set (0.00 sec)
 \end{verbatim}
   \end{itemize}
 \end{frame}
@@ -357,7 +390,6 @@ mysql> SELECT * FROM pet;
 | Buffy    | Harold | dog     | f    | 1989-05-13 | NULL       |
 | Puffball | Diane  | hamster | f    | 1999-03-30 | NULL       |
 +----------+--------+---------+------+------------+------------+
-5 rows in set (0.00 sec)
 \end{verbatim}
 \end{scriptsize}
   \end{itemize}
@@ -385,7 +417,6 @@ mysql> SELECT * FROM pet;
 | Buffy    | Harold | dog     | f    | 1989-05-13 | NULL       |   NULL |
 | Puffball | Diane  | hamster | f    | 1999-03-30 | NULL       |   NULL |
 +----------+--------+---------+------+------------+------------+--------+
-5 rows in set (0.00 sec)
 
 \end{verbatim}
 \end{scriptsize}
@@ -406,7 +437,7 @@ Rows matched: 1  Changed: 1  Warnings: 0
   \frametitle{New data set}
   \begin{itemize}
     \item We can update our pet database with the weights of our pets,
-      ending up with:
+      ending up with, e.g.\ 
       \begin{scriptsize}
 \begin{verbatim}
 
@@ -420,12 +451,12 @@ mysql> SELECT * FROM pet;
 | Buffy    | Harold | dog     | f    | 1989-05-13 | NULL       |   6543 |
 | Puffball | Diane  | hamster | f    | 1999-03-30 | NULL       |     45 |
 +----------+--------+---------+------+------------+------------+--------+
-5 rows in set (0.00 sec)
 
 \end{verbatim}
       \end{scriptsize}
     \item We're assuming here that all weights are expressed as an integer 
       number of grams
+    \item We'll use this table in our examples from now on
   \end{itemize}
 \end{frame}
 
@@ -456,10 +487,10 @@ mysql> SELECT COUNT(owner) FROM pet;
 +--------------+
 |            5 |
 +--------------+
-1 row in set (0.00 sec)
 
 \end{verbatim}
-    \item Why is the answer 5? What if we want the number of \emph{different}
+    \item Why is the answer 5? 
+    \item What if we want the number of \emph{different}
       owners?
 \begin{verbatim}
 mysql> SELECT COUNT(DISTINCT owner) FROM pet;
@@ -468,7 +499,6 @@ mysql> SELECT COUNT(DISTINCT owner) FROM pet;
 +-----------------------+
 |                     4 |
 +-----------------------+
-1 row in set (0.00 sec)
 \end{verbatim}
   \end{itemize}
 \end{frame}
@@ -484,7 +514,6 @@ mysql> SELECT AVG(weight) FROM pet;
 +-------------+
 |   4675.4000 |
 +-------------+
-1 row in set (0.00 sec)
 
 \end{verbatim}
     \item Use {\color{blue}{GROUP BY}} to average over an attribute
@@ -500,7 +529,6 @@ mysql> SELECT species, AVG(weight)
 | hamster |     45.0000 |
 | snake   |  10123.0000 |
 +---------+-------------+
-4 rows in set (0.00 sec)
 \end{verbatim}
   \end{itemize}
 \end{frame}
@@ -516,7 +544,6 @@ mysql> SELECT MIN(weight) FROM pet;
 +-------------+
 |          45 |
 +-------------+
-1 row in set (0.00 sec)
 
 \end{verbatim}
     \item Use {\color{blue}{GROUP BY}} to get the minimum over an attribute
@@ -530,7 +557,6 @@ mysql> SELECT owner, MIN(weight) FROM pet GROUP BY owner;
 | Gwen   |        4321 |
 | Harold |        2345 |
 +--------+-------------+
-4 rows in set (0.00 sec)
 \end{verbatim}
   \end{itemize}
 \end{frame}
@@ -547,7 +573,6 @@ mysql> SELECT SUM(weight) FROM pet;
 +-------------+
 |       23377 |
 +-------------+
-1 row in set (0.00 sec)
 
 \end{verbatim}
     \item Use {\color{blue}{GROUP BY}} to get the sum over an attribute
@@ -562,12 +587,11 @@ mysql> SELECT owner, SUM(weight) FROM pet GROUP BY owner;
 | Gwen   |        4321 |
 | Harold |        8888 |
 +--------+-------------+
-4 rows in set (0.00 sec)
 \end{verbatim}
   \end{itemize}
 \end{frame}
 
-\begin{frame}[shrink=10,fragile]
+\begin{frame}[fragile]
   \frametitle{Exercise}
   \begin{itemize}
     \item Write a query to list every species and the total weight of pets of
@@ -584,8 +608,158 @@ mysql> SELECT species, SUM(weight)
 | hamster |          45 |
 | snake   |       10123 |
 +---------+-------------+
-4 rows in set (0.00 sec)
 \end{verbatim}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Ordering data}
+  \begin{itemize}
+    \item If we want to order the results of our last
+      exercise by total weight, we can do it like this \ldots
+    \item {\color{blue} ORDER BY}
+\begin{verbatim}
+mysql> SELECT species, SUM(weight)
+    -> FROM pet GROUP BY species 
+    -> ORDER BY SUM(weight);
++---------+-------------+
+| species | SUM(weight) |
++---------+-------------+
+| hamster |          45 |
+| dog     |        6543 |
+| cat     |        6666 |
+| snake   |       10123 |
++---------+-------------+
+\end{verbatim}
+  \item Add \verb'DESC' after \verb'ORDER BY SUM(weight)' to get the
+    results in descending order of weight
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Getting data from multiple tables}
+  \begin{itemize}
+    \item Suppose we decide that we want to record information about
+      special events in the lives of our pets.
+    \item We create a new table called \verb'event' to store this
+      information, e.g.\ 
+      \begin{scriptsize}
+\begin{verbatim}
+mysql> SELECT * FROM event;
++--------+------------+----------+-----------------------------+
+| name   | date       | type     | remark                      |
++--------+------------+----------+-----------------------------+
+| Fluffy | 1995-05-15 | litter   | 4 kittens, 3 female, 1 male |
+| Claws  | 1995-09-27 | litter   | 6 kittens, 2 female, 4 male |
+| Claws  | 1998-03-17 | birthday | new flea collar             |
+| Buffy  | 1993-06-23 | litter   | 5 puppies, 2 female, 3 male |
+| Buffy  | 1994-06-19 | litter   | 3 puppies, 3 female         |
+| Slim   | 1993-08-03 | vet      | swallowed tennis ball       |
++--------+------------+----------+-----------------------------+
+
+\end{verbatim}
+      \end{scriptsize}
+    \item What can we do if we need a list of all those owners whose
+      pets have had a litter?
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Getting data from multiple tables}
+  \begin{itemize}
+    \item The litter information is in the event table
+    \item The owner information is in the pet table
+    \item We need both tables to get the information about owners
+      whose pets have had a litter
+      \begin{scriptsize}
+\begin{verbatim}
+mysql> SELECT owner 
+    -> FROM pet JOIN event 
+    -> ON (pet.name = event.name) 
+    -> WHERE event.type = 'litter';
++--------+
+| owner  |
++--------+
+| Harold |
+| Gwen   |
+| Harold |
+| Harold |
++--------+
+\end{verbatim}
+      \end{scriptsize}
+    \item Notice the use of the keyword {\color{blue}{JOIN}} to combine the
+      data from the pet and the event tables (giving the 
+      {\color{blue}{}CROSS PRODUCT})
+    \item The {\color{blue}{ON}} clause ensures that we only have rows in
+      the result where the pet name is the same as the event name
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Getting data from multiple tables}
+  \begin{itemize}
+    \item What if we just want a list of all the \emph{different} 
+      owners whose pets have had a litter?
+      \begin{scriptsize}
+\begin{verbatim}
+mysql> SELECT DISTINCT owner 
+    -> FROM pet JOIN event 
+    -> ON (pet.name = event.name) 
+    -> WHERE event.type = 'litter';
++--------+
+| owner  |
++--------+
+| Harold |
+| Gwen   |
++--------+
+
+\end{verbatim}
+      \end{scriptsize}
+    \item Notice the use of the keyword {\color{blue}{DISTINCT}}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=10,fragile]
+  \frametitle{Using sub-queries}
+  \begin{itemize}
+    \item A query returns a view (table) as its result
+    \item The result can be used like a table in a larger query
+    \item E.g. to find the owners and the names of their lightest pet
+      to have had a litter, we can try \ldots
+      \begin{scriptsize}
+\begin{verbatim}
+mysql> SELECT pet.owner, pet.name, weight, type 
+    -> FROM pet JOIN event ON (pet.name = event.name) 
+    ->          JOIN (SELECT owner, MIN(weight) AS minw 
+    ->                FROM pet GROUP BY owner) weights 
+    ->          ON (weights.owner = pet.owner AND weights.minw = pet.weight) 
+    -> WHERE event.type = 'litter';
++--------+--------+--------+--------+
+| owner  | name   | weight | type   |
++--------+--------+--------+--------+
+| Harold | Fluffy |   2345 | litter |
++--------+--------+--------+--------+
+\end{verbatim}
+      \end{scriptsize}
+    \item Notice how we are able to give a name, \verb'weights', to the
+      result of the sub-query and then to use it in the specification of a
+      JOIN
+    \item This is really beyond the scope of this short introduction to
+      SQL but points the way to what is possible
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Acknowledgments}
+  \begin{itemize}
+    \item The examples here are based on the examples in 
+      the \href{https://dev.mysql.com/doc/refman/5.7/en/tutorial.html}{\color{blue}{MySQL tutorial}}
+    \item Some of the other material is adapted from
+      \begin{itemize}
+        \item Spector, P., \href{https://www.stat.berkeley.edu/~spector/sql.pdf}{\color{blue}Introduction to SQL}, Slides, University of
+          California, Berkeley
+        \item Bailis, P., \href{http://web.stanford.edu/class/cs145/}{\color{blue}CS145: Introduction to Databases}, Stanford University
+      \end{itemize}
   \end{itemize}
 \end{frame}
 
